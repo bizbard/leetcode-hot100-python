@@ -31,12 +31,14 @@ def get_cycle_list_node(head, pos):
         return None
     
     dummy = ListNode(-1)
-    tail = ListNode(head[pos])
     cur = dummy
     for i, he in enumerate(head):
         node = ListNode(he)
         cur.next = node
         cur = node
+
+        if i == pos:
+            tail = node
 
         if i == len(head) - 1 and pos != -1:
             node.next = tail
@@ -45,14 +47,32 @@ def get_cycle_list_node(head, pos):
 
 
 class Solution:
-    def hasCycle(self, head: Optional[ListNode]) -> bool:
-        seen = set()
-        while head:
-            if head in seen:
-                return True
-            seen.add(head)
-            head = head.next
-        return False
+    def detectCycle(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        # if not head:
+        #     return head
+        
+        # seen = set()
+        # while head:
+        #     if head in seen:
+        #         return head
+        #     seen.add(head)
+        #     head = head.next
+        # return None
+
+        fast, slow = head, head
+        while True:
+            if not (fast and fast.next):
+                return None
+            fast, slow = fast.next.next, slow.next
+            if fast == slow:
+                break
+
+        fast = head
+        while fast != slow:
+            fast = fast.next
+            slow = slow.next
+        
+        return fast
 
 
 if __name__ == "__main__":
@@ -62,5 +82,5 @@ if __name__ == "__main__":
     # ====== Driver Code ======
     Sol = Solution()
     root = get_cycle_list_node(head, pos)
-    res = Sol.hasCycle(root)
+    res = Sol.detectCycle(root)
     print(res)
